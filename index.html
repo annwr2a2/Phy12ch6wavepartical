@@ -2,18 +2,22 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المختبر الموجي التفاعلي وبنك الأسئلة الذكي - إعداد الأستاذ أنور البلوشي</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Transverse Wave Simulation - إعداد الأستاذ أنور البلوشي</title>
     <style>
         :root {
             --primary: #2c3e50;
             --accent: #2980b9;
             --bg: #f5f7fa;
             --card-bg: #ffffff;
+            --btn-success: #27ae60;
+            --btn-danger: #e74c3c;
+            --btn-quiz: #f39c12;
         }
 
         * {
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -29,7 +33,7 @@
         }
 
         .container {
-            max-width: 950px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
@@ -37,27 +41,30 @@
             text-align: center;
             background: linear-gradient(135deg, #1a252f, #2c3e50);
             color: white;
-            padding: 15px;
+            padding: 15px 10px;
             border-radius: 10px;
             margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         header h1 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             margin: 5px 0;
         }
 
         @media (min-width: 600px) {
-            header h1 { font-size: 2rem; }
-            header { padding: 20px; margin-bottom: 25px; }
+            header h1 { font-size: 1.8rem; }
         }
 
         .teacher-credit {
-            margin-top: 8px;
-            font-size: 1rem;
+            margin-top: 5px;
+            font-size: 0.95rem;
             color: #f1c40f;
             font-weight: bold;
+        }
+
+        @media (min-width: 600px) {
+            .teacher-credit { font-size: 1.1rem; }
         }
 
         .btn-audio {
@@ -65,20 +72,16 @@
             color: white;
             border: none;
             padding: 10px 18px;
-            border-radius: 20px;
+            border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
-            margin-top: 10px;
+            margin-top: 12px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             transition: 0.2s;
-            font-size: 0.95rem;
-            width: 100%;
-            justify-content: center;
-        }
-        @media (min-width: 480px) {
-            .btn-audio { width: auto; }
+            font-size: 0.9rem;
+            min-height: 44px; /* لسهولة الضغط باللمس */
         }
         .btn-audio:hover { background-color: #8e44ad; }
 
@@ -92,15 +95,16 @@
         }
 
         @media (min-width: 600px) {
-            .card { padding: 25px; margin-bottom: 25px; }
+            .card { padding: 25px; }
         }
 
         .card h2 {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             margin-top: 0;
+            margin-bottom: 15px;
         }
 
-        /* لوحة التحكم المرنة والمتجاوبة بالكامل */
+        /* لوحة تحكم مرنة تتجاوب مع الشاشات الصغيرة */
         .controls-panel {
             display: grid;
             grid-template-columns: 1fr;
@@ -108,54 +112,45 @@
             background: #eef2f5;
             padding: 15px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border: 1px solid #dcdde1;
         }
 
         @media (min-width: 480px) {
-            .controls-panel { grid-template-columns: 1fr 1fr; }
-        }
-        @media (min-width: 768px) {
-            .controls-panel { grid-template-columns: repeat(4, 1fr) auto auto; align-items: flex-end; }
+            .controls-panel { grid-template-columns: repeat(2, 1fr); }
         }
 
-        .input-group, .direction-group {
+        @media (min-width: 768px) {
+            .controls-panel { grid-template-columns: repeat(4, 1fr); align-items: flex-end; }
+        }
+
+        .input-group {
             display: flex;
             flex-direction: column;
             width: 100%;
         }
 
-        /* تحسين خيارات الراديو لتناسب اللمس والهواتف */
+        .direction-group {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
         .radio-options {
             display: flex;
-            gap: 10px;
-            margin-top: 4px;
+            gap: 15px;
+            margin-top: 8px;
+            flex-wrap: wrap;
         }
 
         .radio-options label {
-            flex: 1;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 5px;
+            gap: 8px;
             cursor: pointer;
-            background: white;
-            padding: 10px;
-            border: 2px solid #bdc3c7;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        .radio-options input[type="radio"] {
-            display: none; /* إخفاء الراديو الافتراضي وبناء تصميم مخصص */
-        }
-
-        .radio-options label:has(input:checked) {
-            border-color: var(--accent);
-            background-color: #ebf5fb;
-            color: var(--accent);
+            font-weight: normal;
+            font-size: 0.95rem;
+            min-height: 35px;
         }
 
         label {
@@ -176,72 +171,83 @@
             outline: none;
             background: white;
             width: 100%;
-            height: 44px; /* تيسير اللمس */
+            height: 44px; /* تحسين ملمس الاستجابة باللمس */
         }
 
-        .btn-run {
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            padding: 11px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: 0.2s;
-            height: 44px;
-            width: 100%;
-        }
-        .btn-run:hover { background-color: #219653; }
-
-        .btn-reset {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 11px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: 0.2s;
-            height: 44px;
-            width: 100%;
-        }
-        .btn-reset:hover { background-color: #c0392b; }
-
-        @media (min-width: 480px) {
-            .btn-run, .btn-reset { grid-column: span 1; }
-        }
-        @media (min-width: 768px) {
-            .btn-run, .btn-reset { width: auto; }
+        input[type="number"]:focus, select:focus {
+            border-color: var(--accent);
         }
 
-        /* شاشة عرض العدادات الحية المتجاوبة */
-        .live-status {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        input[type="radio"] {
+            accent-color: var(--accent);
+            transform: scale(1.3);
+        }
+
+        /* حاوية الأزرار التفاعلية للمحاكاة */
+        .action-buttons {
+            display: flex;
             gap: 10px;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .action-buttons {
+                grid-column: span 4;
+                justify-content: flex-end;
+            }
+        }
+
+        .btn-action {
+            flex: 1;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: 0.2s;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (min-width: 768px) {
+            .btn-action { flex: none; width: auto; }
+        }
+
+        #startBtn { background-color: var(--btn-success); }
+        #startBtn:hover { background-color: #219653; }
+        #resetBtn { background-color: var(--btn-danger); }
+        #resetBtn:hover { background-color: #c0392b; }
+
+        /* شاشة عرض العدادات المرنة */
+        .live-status {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
             background: #2c3e50;
             color: #fff;
             padding: 12px;
             border-radius: 6px;
             margin-bottom: 15px;
             font-weight: bold;
-            font-size: 0.9rem;
-            text-align: center;
+            font-size: 0.85rem;
         }
 
         @media (min-width: 600px) {
-            .live-status { grid-template-columns: repeat(4, 1fr); font-size: 1rem; }
+            .live-status {
+                flex-direction: row;
+                justify-content: space-around;
+                font-size: 0.95rem;
+            }
         }
 
         .status-item span {
             color: #f1c40f;
-            font-size: 1.1rem;
-            display: inline-block;
         }
 
-        /* منطقة الرسم المرنة */
         .canvas-container {
             position: relative;
             background: #ffffff;
@@ -254,12 +260,17 @@
         canvas {
             display: block;
             width: 100%;
-            height: 300px;
+            height: 280px;
+            touch-action: none; /* منع زوم الصفحة أثناء سحب النقاط باللمس */
         }
 
-        /* تنسيق قسم أسئلة الذكاء في الأسفل */
+        @media (min-width: 600px) {
+            canvas { height: 320px; }
+        }
+
+        /* تنسيق قسم الأسئلة */
         .quiz-card {
-            border-top: 4px solid #f39c12;
+            border-top: 4px solid var(--btn-quiz);
             background-color: #fffdf6;
         }
 
@@ -270,7 +281,7 @@
             background: #ffffff;
             padding: 15px;
             border-radius: 6px;
-            border-right: 5px solid #f39c12;
+            border-right: 5px solid var(--btn-quiz);
             box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
@@ -281,7 +292,7 @@
         .options-list {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 12px;
+            gap: 10px;
         }
 
         .option-btn {
@@ -294,13 +305,12 @@
             font-weight: bold;
             text-align: right;
             transition: 0.2s;
-            width: 100%;
-            min-height: 50px;
+            min-height: 48px; /* ملائم لمعايير اللمس والموبايل */
         }
         .option-btn:hover:not([disabled]) { background: #f8fafc; border-color: #94a3b8; }
 
-        .option-btn.correct { background-color: #2ecc71 !important; color: white; border-color: #27ae60; }
-        .option-btn.incorrect { background-color: #e74c3c !important; color: white; border-color: #c0392b; }
+        .option-btn.correct { background-color: var(--btn-success) !important; color: white; border-color: #27ae60; }
+        .option-btn.incorrect { background-color: var(--btn-danger) !important; color: white; border-color: #c0392b; }
 
         .feedback-box {
             margin-top: 15px;
@@ -315,18 +325,18 @@
         .feedback-box.danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
         .btn-next {
-            background-color: #f39c12;
+            background-color: var(--btn-quiz);
             color: white;
             border: none;
-            padding: 14px 25px;
+            padding: 12px 25px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            margin-top: 20px;
+            margin-top: 15px;
             width: 100%;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             transition: 0.2s;
-            min-height: 48px;
+            min-height: 44px;
         }
         .btn-next:hover { background-color: #d35400; }
     </style>
@@ -344,7 +354,7 @@
         <h2>🎛️ لوحة تحكم المحاكاة الحية</h2>
         <div class="controls-panel">
             <div class="input-group">
-                <label for="freqInput">التردد المطلـوب (Hz):</label>
+                <label for="freqInput">التردد المطلوب (Hz):</label>
                 <input type="number" id="freqInput" value="0.5" min="0.1" max="5" step="0.1">
             </div>
             
@@ -356,8 +366,8 @@
             <div class="direction-group">
                 <label>اتجاه انتشار الموجة:</label>
                 <div class="radio-options">
-                    <label><input type="radio" name="waveDir" value="right" checked> اليمين (▶)</label>
-                    <label><input type="radio" name="waveDir" value="left"> اليسار (◀)</label>
+                    <label><input type="radio" name="waveDir" value="right" checked> لليمين (▶)</label>
+                    <label><input type="radio" name="waveDir" value="left"> لليسار (◀)</label>
                 </div>
             </div>
 
@@ -370,14 +380,17 @@
                 </select>
             </div>
 
-            <button class="btn-run" id="startBtn">ابدأ الحركة ◀</button>
-            <button class="btn-reset" id="resetBtn">إعادة ↻</button>
+            <div class="action-buttons">
+                <button class="btn-action" id="startBtn">ابدأ الحركة ◀</button>
+                <button class="btn-action" id="resetBtn">إعادة تعيين ↻</button>
+            </div>
         </div>
 
         <div class="live-status">
-            <div class="status-item">التردد: <span id="statusFreq">0.5</span> Hz</div>
+            <div class="status-item">التردد الحالي: <span id="statusFreq">0.5</span> Hz</div>
             <div class="status-item">الاتجاه: <span id="statusDir">إلى اليمين</span></div>
-            <div class="status-item">الزمن: <span id="statusTime">0.00</span> / <span id="statusTarget">2.0</span> ث</div>
+            <div class="status-item">الزمن المستهدف: <span id="statusTarget">2.0</span> ثانية</div>
+            <div class="status-item">الزمن الحالي: <span id="statusTime">0.00</span> ثانية</div>
             <div class="status-item">الحالة: <span id="statusState" style="color:#e74c3c;">متوقفة</span></div>
         </div>
 
@@ -402,27 +415,28 @@
     const canvas = document.getElementById('waveCanvas');
     const ctx = canvas.getContext('2d');
 
-    // الطول الموجي الأصلي الافتراضي
-    const baseWavelength = 220;
-    let wavelength = baseWavelength;
+    // متغيرات أبعاد الرسم الديناميكية لتناسب الهواتف والكمبيوتر
+    let canvasWidth = 800;
+    let canvasHeight = 320;
+    let wavelength = 220;
+    let amplitude = 70;
 
-    // دالة مرنة لضبط أبعاد الكانفاس لتلائم شاشات الهواتف والكمبيوتر
     function resizeCanvas() {
-        const containerWidth = canvas.parentElement.clientWidth;
-        canvas.width = containerWidth;
-        canvas.height = 300;
+        canvasWidth = canvas.parentElement.clientWidth;
+        canvasHeight = window.innerWidth < 600 ? 280 : 320;
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
         
-        // تعديل الطول الموجي بناءً على عرض الشاشة حتى لا تختفي الموجة على الهواتف الضيقة
-        if(containerWidth < 500) {
-            wavelength = baseWavelength * (containerWidth / 500) * 1.2;
-        } else {
-            wavelength = baseWavelength;
-        }
+        // تعديل الطول الموجي والسعة ديناميكياً لتناسب الشاشات الصغيرة دون تداخل
+        wavelength = canvasWidth < 500 ? canvasWidth * 0.5 : 220;
+        amplitude = canvasHeight * 0.22;
         
-        if (typeof render === "function") render();
+        // إعادة ضبط إحداثيات النقاط لتظل في النطاق المرئي للشاشات الصغيرة
+        trackedPoints[0].x = wavelength * 0.25;
+        trackedPoints[1].x = wavelength * 0.75;
+        
+        render();
     }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
 
     // المتغيرات الفيزيائية
     let currentTime = 0;
@@ -431,22 +445,12 @@
     let waveDirection = 'right'; 
     let isRunning = false;
     let animationId;
-
-    const amplitude = 60;    
     let timeStep = 0.015; 
 
-    // جعل مواضع النقاط نسبية ومرنة تتطابق مع المحاور في الشاشات الصغيرة والكبيرة
     const trackedPoints = [
-        { label: 'P', xRatio: 0.15, color: '#e74c3c', radius: 11, initPos: 'قمة', x: 0 },
-        { label: 'D', xRatio: 0.45, color: '#2ecc71', radius: 11, initPos: 'قاع', x: 0 }
+        { label: 'P', x: 55, color: '#e74c3c', radius: 11, initPos: 'قمة' },
+        { label: 'D', x: 165, color: '#2ecc71', radius: 11, initPos: 'قاع' }
     ];
-
-    function updatePointsX() {
-        trackedPoints.forEach(pt => {
-            pt.x = canvas.width * pt.xRatio;
-        });
-    }
-    updatePointsX();
 
     let activePoint = null;
     let generatedQuestionData = {}; 
@@ -468,7 +472,7 @@
 
     // معادلة الموجة المستعرضة الجيبية
     function getWaveY(x, time, freq, dir) {
-        const centerY = canvas.height / 2;
+        const centerY = canvasHeight / 2;
         const k = (2 * Math.PI) / wavelength;
         const w = 2 * Math.PI * freq;
         const phase = (dir === 'right') ? (k * x - w * time * 4) : (k * x + w * time * 4);
@@ -488,11 +492,12 @@
     function drawDirectionArrow(startX, startY, velocity, color) {
         if (Math.abs(velocity) < 0.05) return; 
 
-        const arrowLength = 30; 
+        const arrowLength = window.innerWidth < 500 ? 25 : 35; 
         const headLength = 7;   
         const direction = velocity > 0 ? -1 : 1; 
         
-        const arrowX = startX + 18; 
+        // إزاحة السهم لليمين أو اليسار بحسب مساحة شاشة الهاتف
+        const arrowX = startX + (window.innerWidth < 500 ? 16 : 22); 
         const endY = startY - (arrowLength * direction);
 
         ctx.beginPath();
@@ -506,57 +511,62 @@
         ctx.stroke();
     }
 
-    // دالة الرسم والتحديث الرئيسي
+    // دالة الرسم والتحديث
     function render() {
-        updatePointsX();
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const centerY = canvas.height / 2;
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        const centerY = canvasHeight / 2;
 
-        // رسم خط الاتزان
+        // 1. خط التوازن
         ctx.beginPath();
         ctx.strokeStyle = '#95a5a6';
         ctx.lineWidth = 1.5;
         ctx.moveTo(0, centerY);
-        ctx.lineTo(canvas.width, centerY);
+        ctx.lineTo(canvasWidth, centerY);
         ctx.stroke();
 
-        // رسم سهم اتجاه الانتشار في مكان ذكي بناءً على حجم الكانفاس
+        // 2. سهم اتجاه انتشار الموجة أفقياً
         ctx.beginPath();
         ctx.strokeStyle = '#e67e22'; 
         ctx.lineWidth = 3;
-        const arrowBoxX = canvas.width > 500 ? canvas.width - 160 : canvas.width - 120;
         
+        // ضبط موضع السهم في الهاتف لكي لا يتداخل مع الأشكال
+        const arrowBaseX = canvasWidth < 500 ? canvasWidth - 110 : canvasWidth - 160;
+        const arrowTipX = canvasWidth - 20;
+        const arrowY = window.innerWidth < 500 ? 25 : 45;
+
         if (waveDirection === 'right') {
-            ctx.moveTo(arrowBoxX, 35); ctx.lineTo(canvas.width - 20, 35);
-            ctx.lineTo(canvas.width - 30, 28); ctx.moveTo(canvas.width - 20, 35); ctx.lineTo(canvas.width - 30, 42);
+            ctx.moveTo(arrowBaseX, arrowY); ctx.lineTo(arrowTipX, arrowY);
+            ctx.lineTo(arrowTipX - 12, arrowY - 7); ctx.moveTo(arrowTipX, arrowY); ctx.lineTo(arrowTipX - 12, arrowY + 7);
             ctx.stroke();
-            ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 12px Segoe UI'; ctx.fillText('الانتشار (▶)', arrowBoxX, 20);
+            ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 12px Segoe UI'; 
+            ctx.fillText('انتشار (▶)', arrowBaseX - 5, arrowY - 10);
         } else {
-            ctx.moveTo(canvas.width - 20, 35); ctx.lineTo(arrowBoxX, 35);
-            ctx.lineTo(arrowBoxX + 10, 28); ctx.moveTo(arrowBoxX, 35); ctx.lineTo(arrowBoxX + 10, 42);
+            ctx.moveTo(arrowTipX, arrowY); ctx.lineTo(arrowBaseX, arrowY);
+            ctx.lineTo(arrowBaseX + 12, arrowY - 7); ctx.moveTo(arrowBaseX, arrowY); ctx.lineTo(arrowBaseX + 12, arrowY + 7);
             ctx.stroke();
-            ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 12px Segoe UI'; ctx.fillText('(◀) الانتشار', arrowBoxX, 20);
+            ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 12px Segoe UI'; 
+            ctx.fillText('(◀) انتشار', arrowBaseX - 5, arrowY - 10);
         }
 
-        // رسم حبل الموجة
+        // 3. رسم الموجة
         ctx.beginPath();
         ctx.strokeStyle = '#2980b9';
-        ctx.lineWidth = 4; 
-        for (let x = 0; x < canvas.width; x++) {
+        ctx.lineWidth = window.innerWidth < 500 ? 4 : 5; 
+        for (let x = 0; x < canvasWidth; x++) {
             const y = getWaveY(x, currentTime, frequency, waveDirection);
             if (x === 0) ctx.moveTo(x, y);
             else ctx.lineTo(x, y);
         }
         ctx.stroke();
 
-        // رسم النقاط المتتبعة والأسهم
+        // 4. رسم الجزيئات والأسهم الحركية
         trackedPoints.forEach(pt => {
             const ptY = getWaveY(pt.x, currentTime, frequency, waveDirection);
             const ptVelocity = getWaveVelocity(pt.x, currentTime, frequency, waveDirection);
 
             ctx.beginPath();
             ctx.setLineDash([5, 5]);
-            ctx.strokeStyle = '#bdc3c7';
+            ctx.strokeStyle = '#cbd5e1';
             ctx.moveTo(pt.x, centerY - amplitude - 15);
             ctx.lineTo(pt.x, centerY + amplitude + 15);
             ctx.stroke();
@@ -569,7 +579,7 @@
             ctx.fillStyle = pt.color;
             ctx.fill();
             ctx.strokeStyle = (activePoint === pt) ? '#2c3e50' : '#ffffff'; 
-            ctx.lineWidth = (activePoint === pt) ? 4 : 2.5;
+            ctx.lineWidth = 2.5;
             ctx.stroke();
 
             ctx.fillStyle = '#111111';
@@ -587,7 +597,7 @@
             if (currentTime >= targetTime) {
                 currentTime = targetTime; 
                 isRunning = false;
-                document.getElementById('statusState').textContent = 'مكتملة';
+                document.getElementById('statusState').textContent = 'مكتملة ومتوقفة';
                 document.getElementById('statusState').style.color = '#27ae60';
                 render();
                 cancelAnimationFrame(animationId);
@@ -599,9 +609,10 @@
         }
     }
 
-    // تكييف أحداث السحب والإفلات للهواتف والكمبيوتر
+    // دعم السحب والإفلات للكمبيوتر (الماوس) واللمس (الهاتف والتابلت)
     function getMousePos(e) {
         const rect = canvas.getBoundingClientRect();
+        // الكشف التلقائي عن إحداثيات اللمس أو الماوس
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
         return { x: clientX - rect.left, y: clientY - rect.top };
@@ -616,8 +627,10 @@
             const ptY = getWaveY(pt.x, currentTime, frequency, waveDirection);
             const dist = Math.sqrt((pos.x - pt.x) ** 2 + (pos.y - ptY) ** 2);
             
-            if (dist < pt.radius + 20) { // توسيع مجال المسك للمس في الهواتف
+            // نطاق أكبر قليلاً (radius + 20) على الأجهزة المحمولة لتسهيل التقاط النقطة بالإصبع
+            if (dist < pt.radius + 20) { 
                 activePoint = pt;
+                if (e.cancelable) e.preventDefault();
                 render();
                 break;
             }
@@ -627,9 +640,9 @@
     function onDrag(e) {
         if (!activePoint) return;
         const pos = getMousePos(e);
-        if (pos.x >= 10 && pos.x <= canvas.width - 10) {
-            activePoint.xRatio = pos.x / canvas.width; // حفظ النسبة وليس القيمة الثابتة
+        if (pos.x >= 20 && pos.x <= canvasWidth - 20) {
             activePoint.x = pos.x;
+            if (e.cancelable) e.preventDefault();
             render(); 
         }
     }
@@ -638,14 +651,16 @@
         if (activePoint) { activePoint = null; render(); }
     }
 
+    // أحداث الماوس
     canvas.addEventListener('mousedown', onStartDrag);
     canvas.addEventListener('mousemove', onDrag);
     window.addEventListener('mouseup', onEndDrag);
-    canvas.addEventListener('touchstart', onStartDrag, {passive: true});
-    canvas.addEventListener('touchmove', onDrag, {passive: true});
+    
+    // أحداث اللمس للأجهزة اللوحية والمحاكي
+    canvas.addEventListener('touchstart', onStartDrag, { passive: false });
+    canvas.addEventListener('touchmove', onDrag, { passive: false });
     window.addEventListener('touchend', onEndDrag);
 
-    // ربط مغيرات الراديو المعدلة للهواتف
     document.querySelectorAll('input[name="waveDir"]').forEach(radio => {
         radio.addEventListener('change', (e) => {
             waveDirection = e.target.value;
@@ -659,7 +674,7 @@
     });
 
     // =======================================================
-    // محرك بنك الأسئلة التوليدي الذكي المطور التوافقي
+    // محرك بنك الأسئلة التوليدي الذكي المطور
     // =======================================================
     function generateDynamicQuestion() {
         const frequencies = [0.5, 1.0];
@@ -803,6 +818,7 @@
         document.getElementById('nextQuestionBtn').style.display = 'block';
     }
 
+    // أزرار التحكم في التشغيل
     document.getElementById('startBtn').addEventListener('click', () => {
         frequency = parseFloat(document.getElementById('freqInput').value) || 0.5;
         targetTime = parseFloat(document.getElementById('targetTimeInput').value) || 2.0;
@@ -835,7 +851,11 @@
 
     document.getElementById('nextQuestionBtn').addEventListener('click', generateDynamicQuestion);
 
-    render();
+    // ربط مستشعر تغيير أبعاد المتصفح لتعديل الواجهة فورياً عند تدوير الهاتف أو التابلت
+    window.addEventListener('resize', resizeCanvas);
+
+    // التشغيل الأولي
+    resizeCanvas();
     generateDynamicQuestion();
 </script>
 
