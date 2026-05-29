@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المختبر الموجي التفاعلي وبنك الأسئلة الذكي - إعداد الأستاذ أنور البلوشي</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #2980b9;
+            --bg: #f5f7fa;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            background: linear-gradient(135deg, #1a252f, #2c3e50);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .teacher-credit {
+            margin-top: 8px;
+            font-size: 1.1rem;
+            color: #f1c40f;
+            font-weight: bold;
+        }
+
+        .btn-audio {
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+        .btn-audio:hover { background-color: #8e44ad; }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--accent);
+            margin-bottom: 25px;
+        }
+
+        /* لوحة التحكم بالإدخل والخيارات */
+        .controls-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            background: #eef2f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            align-items: flex-end;
+            border: 1px solid #dcdde1;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 130px;
+        }
+
+        .direction-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 170px;
+        }
+
+        .radio-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+        }
+
+        .radio-options label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: #34495e;
+        }
+
+        input[type="number"], select {
+            padding: 10px;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            text-align: center;
+            color: #2c3e50;
+            outline: none;
+            background: white;
+        }
+
+        input[type="radio"] {
+            accent-color: var(--accent);
+            transform: scale(1.2);
+        }
+
+        .btn-run {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 11px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .btn-run:hover { background-color: #219653; }
+
+        .btn-reset {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .btn-reset:hover { background-color: #c0392b; }
+
+        /* شاشة عرض العدادات الحية */
+        .live-status {
+            display: flex;
+            justify-content: space-around;
+            background: #2c3e50;
+            color: #fff;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .status-item span {
+            color: #f1c40f;
+            font-size: 1.2rem;
+        }
+
+        /* منطقة الرسم */
+        .canvas-container {
+            position: relative;
+            background: #ffffff;
+            border: 2px solid #dcdde1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 320px;
+        }
+
+        /* تنسيق قسم أسئلة الذكاء في الأسفل */
+        .quiz-card {
+            border-top: 4px solid #f39c12;
+            background-color: #fffdf6;
+        }
+
+        .question-box {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            background: #ffffff;
+            padding: 18px;
+            border-radius: 6px;
+            border-right: 5px solid #f39c12;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .options-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            padding: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: bold;
+            text-align: right;
+            transition: 0.2s;
+        }
+        .option-btn:hover:not([disabled]) { background: #f8fafc; border-color: #94a3b8; }
+
+        .option-btn.correct { background-color: #2ecc71 !important; color: white; border-color: #27ae60; }
+        .option-btn.incorrect { background-color: #e74c3c !important; color: white; border-color: #c0392b; }
+
+        .feedback-box {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: none;
+            line-height: 1.6;
+        }
+        .feedback-box.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .feedback-box.danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        .btn-next {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            width: 100%;
+            font-size: 1.1rem;
+            transition: 0.2s;
+        }
+        .btn-next:hover { background-color: #d35400; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>المختبر الموجي التفاعلي وبنك الأسئلة الذكي</h1>
+        <div class="teacher-credit">إعداد الأستاذ: أنور البلوشي (92818606)</div>
+        <button class="btn-audio" id="speakBtn">🔊 استمع إلى شرح نظام التقييم والمختبر</button>
+    </header>
+
+    <div class="card">
+        <h2>🎛️ لوحة تحكم المحاكاة الحية</h2>
+        <div class="controls-panel">
+            <div class="input-group">
+                <label for="freqInput">التردد المطلـوب (Hz):</label>
+                <input type="number" id="freqInput" value="0.5" min="0.1" max="5" step="0.1">
+            </div>
+            
+            <div class="input-group">
+                <label for="targetTimeInput">الزمن المستهدف (ثانية):</label>
+                <input type="number" id="targetTimeInput" value="2.0" min="0.1" max="20" step="0.1">
+            </div>
+
+            <div class="direction-group">
+                <label>اتجاه انتشار الموجة:</label>
+                <div class="radio-options">
+                    <label><input type="radio" name="waveDir" value="right" checked> إِلى اليمين (▶)</label>
+                    <label><input type="radio" name="waveDir" value="left"> إِلى اليسار (◀)</label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="speedSelect">🐢 سرعة عرض الحركة:</label>
+                <select id="speedSelect">
+                    <option value="0.04">سرعة طبيعية ⚡</option>
+                    <option value="0.015" selected>حركة بطيئة 🐢</option>
+                    <option value="0.005">حركة بطيئة جداً 🔍</option>
+                </select>
+            </div>
+
+            <button class="btn-run" id="startBtn">ابدأ الحركة ◀</button>
+            <button class="btn-reset" id="resetBtn">إعادة تعيين ↻</button>
+        </div>
+
+        <div class="live-status">
+            <div class="status-item">التردد الحالي: <span id="statusFreq">0.5</span> Hz</div>
+            <div class="status-item">الاتجاه: <span id="statusDir">إلى اليمين</span></div>
+            <div class="status-item">الزمن: <span id="statusTime">0.00</span> / <span id="statusTarget">2.0</span> ثانية</div>
+            <div class="status-item">الحالة: <span id="statusState" style="color:#e74c3c;">متوقفة</span></div>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="waveCanvas"></canvas>
+        </div>
+    </div>
+
+    <div class="card quiz-card">
+        <h2>🎯 بنك الأسئلة المطور لطلاب الصف 12</h2>
+        <div class="question-box" id="qText">جاري توليد التحدي الجديد تلقائياً...</div>
+        
+        <div class="options-list" id="optionsContainer">
+            </div>
+
+        <div class="feedback-box" id="feedbackContainer"></div>
+
+        <button class="btn-next" id="nextQuestionBtn" style="display: none;">توليد سؤال جديد عشوائياً ↻</button>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('waveCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = 320;
+    }
+    resizeCanvas();
+
+    // المتغيرات الفيزيائية
+    let currentTime = 0;
+    let targetTime = 2.0;
+    let frequency = 0.5;
+    let waveDirection = 'right'; 
+    let isRunning = false;
+    let animationId;
+
+    const amplitude = 70;    
+    const wavelength = 220;   
+    let timeStep = 0.015; 
+
+    const trackedPoints = [
+        { label: 'P', x: 55, color: '#e74c3c', radius: 11, initPos: 'قمة' },
+        { label: 'D', x: 165, color: '#2ecc71', radius: 11, initPos: 'قاع' }
+    ];
+
+    let activePoint = null;
+    let generatedQuestionData = {}; 
+
+    function playAudioGuide() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const textToSpeak = `
+                مرحباً بكم في تحدي بنك الأسئلة الشامل. قمنا هنا بتوسيع الأسئلة لتشمل نوعين: 
+                النوع الأول يسألك عن التموضع النهائي للجزيء، والنوع الثاني يقيس عمق فهمك الفيزيائي، عبر سؤالك عن اتجاه الحركة اللحظية صعوداً أو هبوطاً عندما يمر الجزيء بخط الاتزان النصفي للموجة المستعرضة.
+            `;
+            const speech = new SpeechSynthesisUtterance(textToSpeak);
+            speech.lang = 'ar-SA';
+            speech.rate = 0.92;
+            window.speechSynthesis.speak(speech);
+        }
+    }
+    document.getElementById('speakBtn').addEventListener('click', playAudioGuide);
+
+    // معادلة الموجة المستعرضة الجيبية
+    function getWaveY(x, time, freq, dir) {
+        const centerY = canvas.height / 2;
+        const k = (2 * Math.PI) / wavelength;
+        const w = 2 * Math.PI * freq;
+        const phase = (dir === 'right') ? (k * x - w * time * 4) : (k * x + w * time * 4);
+        return centerY - amplitude * Math.sin(phase);
+    }
+
+    // دالة السرعة اللحظية العمودية (الاهتزازية) لمعرفة اتجاه السهم وفحص الأسئلة بدقة ميكانيكية
+    function getWaveVelocity(x, time, freq, dir) {
+        const k = (2 * Math.PI) / wavelength;
+        const w = 2 * Math.PI * freq;
+        const phase = (dir === 'right') ? (k * x - w * time * 4) : (k * x + w * time * 4);
+        const cosVal = Math.cos(phase);
+        return (dir === 'right') ? (amplitude * w * cosVal) : (-amplitude * w * cosVal);
+    }
+
+    // دالة رسم سهم الاتجاه اللحظي للجسيم
+    function drawDirectionArrow(startX, startY, velocity, color) {
+        if (Math.abs(velocity) < 0.05) return; 
+
+        const arrowLength = 35; 
+        const headLength = 8;   
+        const direction = velocity > 0 ? -1 : 1; 
+        
+        const arrowX = startX + 22; 
+        const endY = startY - (arrowLength * direction);
+
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3;
+        ctx.moveTo(arrowX, startY);
+        ctx.lineTo(arrowX, endY);
+        ctx.lineTo(arrowX - headLength, endY + (headLength * direction));
+        ctx.moveTo(arrowX, endY);
+        ctx.lineTo(arrowX + headLength, endY + (headLength * direction));
+        ctx.stroke();
+    }
+
+    // دالة الرسم والتحديث
+    function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const centerY = canvas.height / 2;
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#95a5a6';
+        ctx.lineWidth = 1.5;
+        ctx.moveTo(0, centerY);
+        ctx.lineTo(canvas.width, centerY);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#e67e22'; 
+        ctx.lineWidth = 3.5;
+        
+        if (waveDirection === 'right') {
+            ctx.moveTo(canvas.width - 160, 45); ctx.lineTo(canvas.width - 30, 45);
+            ctx.lineTo(canvas.width - 45, 35); ctx.moveTo(canvas.width - 30, 45); ctx.lineTo(canvas.width - 45, 55);
+            ctx.stroke();
+            ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 14px Segoe UI'; ctx.fillText('اتجاه انتشار الموجة (▶)', canvas.width - 160, 25);
+        } else {
+            ctx.moveTo(canvas.width - 30, 45); ctx.lineTo(canvas.width - 160, 45);
+            ctx.lineTo(canvas.width - 145, 35); ctx.moveTo(canvas.width - 160, 45); ctx.lineTo(canvas.width - 145, 55);
+            ctx.stroke();
+            ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 14px Segoe UI'; ctx.fillText('(◀) اتجاه انتشار الموجة', canvas.width - 160, 25);
+        }
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#2980b9';
+        ctx.lineWidth = 5; 
+        for (let x = 0; x < canvas.width; x++) {
+            const y = getWaveY(x, currentTime, frequency, waveDirection);
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        trackedPoints.forEach(pt => {
+            const ptY = getWaveY(pt.x, currentTime, frequency, waveDirection);
+            const ptVelocity = getWaveVelocity(pt.x, currentTime, frequency, waveDirection);
+
+            ctx.beginPath();
+            ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = '#bdc3c7';
+            ctx.moveTo(pt.x, centerY - amplitude - 15);
+            ctx.lineTo(pt.x, centerY + amplitude + 15);
+            ctx.stroke();
+            ctx.setLineDash([]); 
+
+            drawDirectionArrow(pt.x, ptY, ptVelocity, pt.color);
+
+            ctx.beginPath();
+            ctx.arc(pt.x, ptY, pt.radius, 0, Math.PI * 2);
+            ctx.fillStyle = pt.color;
+            ctx.fill();
+            ctx.strokeStyle = (activePoint === pt) ? '#2c3e50' : '#ffffff'; 
+            ctx.lineWidth = (activePoint === pt) ? 4 : 2.5;
+            ctx.stroke();
+
+            ctx.fillStyle = '#111111';
+            ctx.font = 'bold 18px Segoe UI';
+            ctx.fillText(pt.label, pt.x - 6, ptY - 18);
+        });
+
+        document.getElementById('statusTime').textContent = currentTime.toFixed(2);
+    }
+
+    function updateMovement() {
+        if (isRunning) {
+            currentTime += timeStep; 
+
+            if (currentTime >= targetTime) {
+                currentTime = targetTime; 
+                isRunning = false;
+                document.getElementById('statusState').textContent = 'مكتملة ومتوقفة';
+                document.getElementById('statusState').style.color = '#27ae60';
+                render();
+                cancelAnimationFrame(animationId);
+                return;
+            }
+
+            render();
+            animationId = requestAnimationFrame(updateMovement);
+        }
+    }
+
+    // أحداث السحب والإفلات
+    function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function onStartDrag(e) {
+        if (isRunning) return; 
+        const pos = getMousePos(e);
+        
+        for (let i = 0; i < trackedPoints.length; i++) {
+            const pt = trackedPoints[i];
+            const ptY = getWaveY(pt.x, currentTime, frequency, waveDirection);
+            const dist = Math.sqrt((pos.x - pt.x) ** 2 + (pos.y - ptY) ** 2);
+            
+            if (dist < pt.radius + 15) { 
+                activePoint = pt;
+                render();
+                break;
+            }
+        }
+    }
+
+    function onDrag(e) {
+        if (!activePoint) return;
+        const pos = getMousePos(e);
+        if (pos.x >= 20 && pos.x <= canvas.width - 20) {
+            activePoint.x = pos.x;
+            render(); 
+        }
+    }
+
+    function onEndDrag() {
+        if (activePoint) { activePoint = null; render(); }
+    }
+
+    canvas.addEventListener('mousedown', onStartDrag);
+    canvas.addEventListener('mousemove', onDrag);
+    window.addEventListener('mouseup', onEndDrag);
+    canvas.addEventListener('touchstart', onStartDrag);
+    canvas.addEventListener('touchmove', onDrag);
+    window.addEventListener('touchend', onEndDrag);
+
+    document.querySelectorAll('input[name="waveDir"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            waveDirection = e.target.value;
+            document.getElementById('statusDir').textContent = (waveDirection === 'right') ? 'إلى اليمين' : 'إلى اليسار';
+            render();
+        });
+    });
+
+    document.getElementById('speedSelect').addEventListener('change', (e) => {
+        timeStep = parseFloat(e.target.value);
+    });
+
+    // =======================================================
+    // محرك بنك الأسئلة التوليدي الذكي المطور (الموقع والحركة اللحظية)
+    // =======================================================
+    function generateDynamicQuestion() {
+        // فترات مدروسة فيزيائياً لتعطي قمة، قاع، أو مركز الاتزان تماماً
+        const frequencies = [0.5, 1.0];
+        const times = [0.25, 0.5, 0.75, 1.0, 1.5, 2.0];
+        const directions = ['right', 'left'];
+        const points = [...trackedPoints];
+        const questionTypes = ['position', 'direction']; // نوعان من الأسئلة بالتناوب
+
+        const chosenFreq = frequencies[Math.floor(Math.random() * frequencies.length)];
+        const chosenTime = times[Math.floor(Math.random() * times.length)];
+        const chosenDir = directions[Math.floor(Math.random() * directions.length)];
+        const chosenPt = points[Math.floor(Math.random() * points.length)];
+        const chosenType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+
+        const T = 1 / chosenFreq;
+        const ratio = chosenTime / T;
+
+        // 1. حساب الموضع النهائي (قمة، قاع، خط الاتزان)
+        let finalPosition = '';
+        if (chosenPt.label === 'P') {
+            if (ratio % 1 === 0) finalPosition = 'قمة';
+            else if (ratio % 1 === 0.5) finalPosition = 'قاع';
+            else finalPosition = 'خط الاتزان (النص)';
+        } else if (chosenPt.label === 'D') {
+            if (ratio % 1 === 0) finalPosition = 'قاع';
+            else if (ratio % 1 === 0.5) finalPosition = 'قمة';
+            else finalPosition = 'خط الاتزان (النص)';
+        }
+
+        // 2. حساب اتجاه الحركة اللحظية الدقيق رياضياً بناءً على مشتقة الطور والسرعة
+        let motionDirection = '';
+        const testVel = getWaveVelocity(chosenPt.x, chosenTime, chosenFreq, chosenDir);
+        
+        if (Math.abs(testVel) < 0.1) {
+            motionDirection = 'ساكن لحظياً (سرعة صفر)';
+        } else if (testVel > 0) {
+            motionDirection = 'إلى الأسفل ⬇️';
+        } else {
+            motionDirection = 'إلى الأعلى ⬆️';
+        }
+
+        let qText = '';
+        let possibleAnswers = [];
+        let correctAnswer = '';
+        let stepByStepExplanation = '';
+
+        const dirTextAr = (chosenDir === 'right') ? 'إلى اليمين (▶)' : 'إلى اليسار (◀)';
+
+        // صياغة محتوى السؤال بناءً على النوع المختار عشوائياً
+        if (chosenType === 'position') {
+            // سؤال الموضع التقليدي المطور
+            qText = `إذا كان تردد الموجة هو <strong>${chosenFreq} Hz</strong> وتنتشر <strong>${dirTextAr}</strong>، ما هو <strong>الموضع النهائي</strong> لبقعة الحبر عند النقطة <strong>(${chosenPt.label})</strong> بعد مرور زمن <strong>(${chosenTime} s)</strong>؟`;
+            possibleAnswers = ['قمة', 'قاع', 'خط الاتزان (النص)'];
+            correctAnswer = finalPosition;
+            
+            stepByStepExplanation = `
+                <strong>طريقة الوصول للجواب الصحيح:</strong><br>
+                1. احسب الزمن الدوري للموجة: $T = \\frac{1}{f} = \\frac{1}{${chosenFreq}} = ${T}\\text{ s}$.<br>
+                2. قارن الزمن المطلوب بالزمن الدوري: الإزاحة تعادل $\\frac{${chosenTime}}{${T}} = ${ratio}$ دورة.<br>
+                3. بما أن النقطة بدأت من <strong>(${chosenPt.initPos})</strong>، فإن مرور هذه النسبة يوصلها إلى <strong>[${finalPosition}]</strong>.
+            `;
+        } else {
+            // سؤال اتجاه الحركة اللحظية الفائق (طلبك الجديد)
+            qText = `إذا كان تردد الموجة هو <strong>${chosenFreq} Hz</strong> وتنتشر <strong>${dirTextAr}</strong>، ما هو <strong>اتجاه الحركة اللحظية</strong> لبقعة الحبر عند النقطة <strong>(${chosenPt.label})</strong> تماماً عند اللحظة الزمنية <strong>(${chosenTime} s)</strong>؟`;
+            possibleAnswers = ['إلى الأعلى ⬆️', 'إلى الأسفل ⬇️', 'ساكن لحظياً (سرعة صفر)'];
+            correctAnswer = motionDirection;
+
+            stepByStepExplanation = `
+                <strong>طريقة الوصول للجواب الصحيح:</strong><br>
+                1. احسب موضع النقطة النهائي أولاً: وجدنا أن الجزيء يقع عند <strong>[${finalPosition}]</strong>.<br>
+                2. <strong>القاعدة الفيزيائية الهامة:</strong> عند أقصى إزاحة (القمة أو القاع)، تكون السرعة صفراً والجزيء <strong>ساكن لحظياً</strong>.<br>
+                3. أما عند خط الاتزان (النص)، تكون السرعة قصوى، وبمتابعة مقدمة الموجة القادمة، نجد أن اتجاه حركتها اللحظية يكون <strong>[${motionDirection}]</strong>.
+            `;
+        }
+
+        generatedQuestionData = {
+            correctAnswer: correctAnswer,
+            explanation: stepByStepExplanation
+        };
+
+        document.getElementById('qText').innerHTML = qText;
+
+        const container = document.getElementById('optionsContainer');
+        container.innerHTML = '';
+        document.getElementById('feedbackContainer').style.display = 'none';
+        document.getElementById('nextQuestionBtn').style.display = 'none';
+
+        possibleAnswers.forEach(ans => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = ans;
+            btn.addEventListener('click', () => handleAnswerSelection(btn, ans));
+            container.appendChild(btn);
+        });
+
+        // ضبط ومزامنة شاشة العرض العلوية آلياً مع السؤال لتسهيل الشرح الصفي
+        isRunning = false;
+        cancelAnimationFrame(animationId);
+        currentTime = 0;
+        frequency = chosenFreq;
+        targetTime = chosenTime;
+        waveDirection = chosenDir;
+
+        document.getElementById('freqInput').value = chosenFreq;
+        document.getElementById('targetTimeInput').value = chosenTime;
+        document.querySelector(`input[name="waveDir"][value="${chosenDir}"]`).checked = true;
+        
+        document.getElementById('statusFreq').textContent = chosenFreq;
+        document.getElementById('statusTarget').textContent = chosenTime.toFixed(1);
+        document.getElementById('statusDir').textContent = (chosenDir === 'right') ? 'إلى اليمين' : 'إلى اليسار';
+        document.getElementById('statusState').textContent = 'في انتظار إجابتك بالأسفل...';
+        document.getElementById('statusState').style.color = '#f39c12';
+
+        render();
+    }
+
+    function handleAnswerSelection(selectedBtn, chosenAns) {
+        const buttons = document.querySelectorAll('.option-btn');
+        buttons.forEach(btn => {
+            btn.disabled = true;
+            if (btn.innerText === generatedQuestionData.correctAnswer) {
+                btn.classList.add('correct');
+            }
+        });
+
+        const feedback = document.getElementById('feedbackContainer');
+        feedback.style.display = 'block';
+
+        if (chosenAns === generatedQuestionData.correctAnswer) {
+            feedback.className = 'feedback-box success';
+            feedback.innerHTML = `🎉 إجابة صحيحة وممتازة جداً يا بطل! تحليل فيزيائي دقيق.`;
+        } else {
+            selectedBtn.classList.add('incorrect');
+            feedback.className = 'feedback-box danger';
+            feedback.innerHTML = `❌ الإجابة تحتاج لمراجعة.<br><br> ${generatedQuestionData.explanation}`;
+        }
+
+        // تحريك الموجة لتقف عند المستهدف وتظهر الأسهم اللحظية بوضوح
+        setTimeout(() => {
+            if (!isRunning) {
+                isRunning = true;
+                document.getElementById('statusState').textContent = 'تتحرك لإثبات النتيجة اللحظية...';
+                document.getElementById('statusState').style.color = '#e67e22';
+                updateMovement();
+            }
+        }, 600);
+
+        document.getElementById('nextQuestionBtn').style.display = 'block';
+    }
+
+    // أزرار التحكم في التشغيل اليدوي للبرنامج في الأعلى
+    document.getElementById('startBtn').addEventListener('click', () => {
+        frequency = parseFloat(document.getElementById('freqInput').value) || 0.5;
+        targetTime = parseFloat(document.getElementById('targetTimeInput').value) || 2.0;
+        waveDirection = document.querySelector('input[name="waveDir"]:checked').value;
+        timeStep = parseFloat(document.getElementById('speedSelect').value);
+
+        if (currentTime >= targetTime) { currentTime = 0; }
+
+        document.getElementById('statusFreq').textContent = frequency;
+        document.getElementById('statusTarget').textContent = targetTime.toFixed(1);
+        document.getElementById('statusDir').textContent = (waveDirection === 'right') ? 'إلى اليمين' : 'إلى اليسار';
+        document.getElementById('statusState').textContent = 'تهتز الآن...';
+        document.getElementById('statusState').style.color = '#f39c12';
+
+        if (!isRunning) {
+            isRunning = true;
+            updateMovement();
+        }
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        isRunning = false;
+        cancelAnimationFrame(animationId);
+        currentTime = 0;
+        document.getElementById('statusTime').textContent = '0.00';
+        document.getElementById('statusState').textContent = 'متوقفة';
+        document.getElementById('statusState').style.color = '#e74c3c';
+        render();
+    });
+
+    document.getElementById('nextQuestionBtn').addEventListener('click', generateDynamicQuestion);
+
+    render();
+    generateDynamicQuestion();
+</script>
+
+</body>
+</html>
